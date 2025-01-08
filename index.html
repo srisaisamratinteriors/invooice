@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <title>SriSaiSamrat.Interiors</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .invoice {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .invoice-header img {
+            max-height: 150px;
+        }
+
+        .invoice-details-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .details {
+            width: 48%;
+        }
+
+        .details table {
+            width: 100%;
+        }
+
+        .details th,
+        .details td {
+            text-align: left;
+            padding: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .invoice-items table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .invoice-items th,
+        .invoice-items td {
+            border: #e0e0e0;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .invoice-items th {
+            background: #e8f4fc;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .invoice-footer {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 12px 18px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .add-item {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .add-item input {
+            padding: 10px;
+            margin-right: 10px;
+            border: #007bff;
+            border-radius: 4px;
+            background-color: #f8fbff;
+            color: #333;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .add-item input:focus {
+            border-color: #0056b3;
+            background-color: #eef6ff;
+        }
+
+        .totals-container {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .totals-container div {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .totals-container strong {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .delete-icon {
+            color: red;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .delete-icon:hover {
+            color: #b30000;
+        }
+
+        .details input {
+            width: 90%;
+            /* Reduce the width */
+            padding: 8px;
+            /* Reduce padding */
+            /* margin-top: 5px; */
+            /* margin-bottom: 8px; */
+            border: #ddd;
+            /* background-color: #f8fbff; */
+            border-radius: 4px;
+            /* Slightly smaller border radius */
+            font-size: 0.85rem;
+            /* Slightly smaller font size */
+            color: #333;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .details input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 3px rgba(0, 123, 255, 0.4);
+            outline: none;
+        }
+
+        .details label {
+            font-size: 0.85rem;
+            /* Match label size with input */
+            color: #555;
+            display: block;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .invoice-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .invoice-details-container {
+                flex-direction: column;
+            }
+
+            .details {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .invoice-items table {
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+                padding: 12px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .invoice-header img {
+                max-height: 40px;
+            }
+
+            .invoice-items th,
+            .invoice-items td {
+                padding: 8px;
+                font-size: 0.8rem;
+            }
+
+            .details th,
+            .details td {
+                padding: 4px 0;
+            }
+
+            .btn {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media print {
+            .add-item {
+                display: none;
+            }
+
+            th:nth-child(7),
+            td:nth-child(7) {
+                display: none;
+            }
+        }
+
+        .invoice-items {
+            width: 100%;
+            margin: 0 auto;
+            overflow-x: auto;
+            /* Enable horizontal scrolling for small screens */
+        }
+
+        .invoice-items table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        .invoice-items th,
+        .invoice-items td {
+            text-align: left;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+        }
+
+        .invoice-items thead {
+            background-color: #f4f4f4;
+        }
+
+        .invoice-items th {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .invoice-items tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Responsive design for small screen size 320x516 */
+        @media (max-width: 320px) {
+
+            .invoice-items th,
+            .invoice-items td {
+                font-size: 10px;
+                padding: 4px 6px;
+            }
+
+            .invoice-items table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .invoice-items td {
+                font-size: 10px;
+            }
+
+            .invoice-items td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-weight: bold;
+                text-align: left;
+            }
+
+            .invoice-items td:last-child {
+                text-align: center;
+            }
+        }
+
+        /* Ensure that we have space for scrolling within small screen size */
+        @media (max-width: 516px) {
+            .invoice-items {
+                padding: 0 8px;
+            }
+
+            .invoice-items table {
+                min-width: 320px;
+            }
+
+            .invoice-items td {
+                font-size: 10px;
+                padding: 6px;
+            }
+
+            .invoice-items th,
+            .invoice-items td {
+                padding: 4px 8px;
+            }
+        }
+
+        @media print {
+            .invoice-footer {
+                display: none;
+            }
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div class="invoice">
+        <div class="invoice-header">
+            <img src="logo.jpg" alt="Company Logo">
+            <h1>Invoice</h1>
+            <div>
+                <p>Date: <span id="invoiceDate"></span></p>
+                <p>Invoice Number: <span id="invoiceNumber"></span></p>
+            </div>
+        </div>
+
+        <div class="invoice-details-container">
+            <div class="details">
+                <h3>Bill From</h3>
+                <table>
+                    <tr>
+                        <!-- <th>Company Name:</th> -->
+                        <td>Sri Sai Samrat Interiors</td>
+                    </tr>
+                    <tr>
+                        <!-- <th>Mobile:</th> -->
+                        <td>+91 9700507666</td>
+                    </tr>
+                    <tr>
+                        <!-- <th>Email:</th> -->
+                        <td>srisaisamrat.interiors1@gmail.com</td>
+                    </tr>
+                    <tr>
+                        <!-- <th>Address:</th> -->
+                        <td>Vanthopu center, mini bypass road, opposite Ms dental hospital, Nellore</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="details">
+                <h3>Bill To</h3>
+                <table>
+                    <tr>
+                        <!-- <th>Customer Name:</th> -->
+                        <td><input type="text" id="customerName" placeholder="Enter customer name"></td>
+                    </tr>
+                    <tr>
+                        <!-- <th>Mobile:</th> -->
+                        <td><input type="text" id="customerMobile" placeholder="Enter mobile number"></td>
+                    </tr>
+                    <tr>
+                        <!-- <th>Email:</th> -->
+                        <td><input type="email" id="customerEmail" placeholder="Enter email"></td>
+                    </tr>
+                    <tr>
+                        <!-- <th>Address:</th> -->
+                        <td><input type="text" id="customerAddress" placeholder="Enter address"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="add-item">
+            <input type="text" id="itemName" placeholder="Item Name">
+            <input type="text" id="itemDescription" placeholder="Description">
+            <input type="number" id="itemQuantity" placeholder="Quantity">
+            <input type="number" id="itemPrice" placeholder="Price">
+            <button class="btn" onclick="addItem()">Add Item</button>
+        </div>
+
+
+        <div class="invoice-items">
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Item Name</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="itemList">
+                </tbody>
+                <!-- <tfoot>
+                    <tr>
+                        <td colspan="4"><strong>Sub Total</strong></td>
+                        <td id="subTotal">₹0.00</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><strong>Grand Total</strong></td>
+                        <td id="grandTotal">₹0.00</td>
+                        <td></td>
+                    </tr>
+                </tfoot> -->
+
+            </table>
+        </div>
+        <div class="totals-container">
+            <div><strong>Sub Total: </strong><span id="subTotal">₹0.00</span></div>
+            <div><strong>Grand Total: </strong><span id="grandTotal">₹0.00</span></div>
+        </div>
+
+
+        <div class="invoice-footer">
+            <button class="btn" onclick="printInvoice()">
+                <i class="fas fa-print"></i> Print Invoice
+            </button>
+            <button class="btn" onclick="shareOnWhatsApp()">
+                <i class="fab fa-whatsapp"></i> Share via WhatsApp
+            </button>
+        </div>
+
+    </div>
+</body>
+<script>
+    function shareOnWhatsApp() {
+        // Extract customer details
+        const customerName = document.getElementById('customerName').value;
+        const customerMobile = document.getElementById('customerMobile').value;
+        const customerEmail = document.getElementById('customerEmail').value;
+        const customerAddress = document.getElementById('customerAddress').value;
+
+        // Extract invoice items
+        const items = [];
+        const rows = document.querySelectorAll('#itemList tr');
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const itemDetails = {
+                name: cells[1]?.textContent,
+                description: cells[2]?.textContent,
+                quantity: cells[3]?.textContent,
+                price: cells[4]?.textContent,
+                amount: cells[5]?.textContent
+            };
+            items.push(itemDetails);
+        });
+
+        // Format the message
+        let message = `*Invoice Details Sri Sai Samrat Interiors*\n\n*Bill From:*\nSri Sai Samrat Interiors\n+91 9700507666\nsrisaisamrat.interiors1@gmail.com\nVanthopu center, mini bypass road, opposite Ms dental hospital, Nellore\n\n*Bill To:*\nName: ${customerName}\nMobile: ${customerMobile}\nEmail: ${customerEmail}\nAddress: ${customerAddress}\n\n*Items:*\n`;
+
+        items.forEach((item, index) => {
+            message += `${index + 1}. ${item.name} - ${item.description}\n    Quantity: ${item.quantity}, Price: ${item.price}, Amount: ${item.amount}\n`;
+        });
+
+        message += `\n*Sub Total:* ₹${subtotal.toFixed(2)}\n*Grand Total:* ₹${subtotal.toFixed(2)}\n`;
+
+        // Encode the message for WhatsApp
+        const whatsappMessage = encodeURIComponent(message);
+
+        // Open WhatsApp
+        const whatsappUrl = `https://wa.me/?text=${whatsappMessage}`;
+        window.open(whatsappUrl, '_blank');
+    }
+
+    let itemCount = 1;
+    let subtotal = 0;
+    let invoiceCounter = 0; // Start counter from 0
+
+    function addItem() {
+        const itemName = document.getElementById('itemName').value;
+        const itemDescription = document.getElementById('itemDescription').value;
+        const itemQuantity = parseInt(document.getElementById('itemQuantity').value);
+        const itemPrice = parseFloat(document.getElementById('itemPrice').value);
+
+        // Check if the input values are valid
+        if (itemName && itemDescription && !isNaN(itemQuantity) && itemQuantity > 0 && !isNaN(itemPrice) && itemPrice > 0) {
+            const amount = itemQuantity * itemPrice; // Calculate amount for the item
+            subtotal += amount; // Update subtotal
+
+            const itemRow = document.createElement('tr');
+            const deleteIconHTML = `<a href="#" class="delete-icon" onclick="removeItem(this, ${amount})">&#10006;</a>`;
+
+            itemRow.innerHTML = `
+            <td>${itemCount}</td>
+            <td>${itemName}</td>
+            <td>${itemDescription}</td>
+            <td>${itemQuantity}</td>
+            <td>&#8377;${itemPrice.toFixed(2)}</td>
+            <td>&#8377;${amount.toFixed(2)}</td>
+            <td>${deleteIconHTML}</td>
+        `;
+
+            document.getElementById('itemList').appendChild(itemRow);
+
+            // Update the totals
+            updateTotals();
+
+            itemCount++;
+        } else {
+            alert('Please enter valid item details');
+        }
+
+        // Clear input fields after adding the item
+        document.getElementById('itemName').value = '';
+        document.getElementById('itemDescription').value = '';
+        document.getElementById('itemQuantity').value = '';
+        document.getElementById('itemPrice').value = '';
+    }
+
+    function removeItem(button, amount) {
+        // Remove the item row from the table
+        button.closest('tr').remove();
+
+        // Adjust subtotal when an item is removed
+        subtotal -= amount;
+
+        // Update the totals after removal
+        updateTotals();
+    }
+
+    function updateTotals() {
+        // Update both subtotal and grand total with rupees symbol and 2 decimal precision
+        document.getElementById('subTotal').textContent = `₹${subtotal.toFixed(2)}`;
+        document.getElementById('grandTotal').textContent = `₹${subtotal.toFixed(2)}`;
+    }
+
+    function printInvoice() {
+        const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+
+        const invoiceDate = dateFormatter.format(new Date()); // Format: DD/MM/YYYY
+        invoiceCounter++; // Increment the counter with each new invoice
+        const invoiceNumber = 'INV-' + invoiceCounter.toString().padStart(6, '0'); // Ensure 6-digit format with leading zeros
+
+        // Fill in the date and invoice number
+        document.getElementById('invoiceDate').textContent = invoiceDate;
+        document.getElementById('invoiceNumber').textContent = invoiceNumber;
+
+        // Trigger the print dialog
+        window.print();
+    }
+
+
+</script>
+
+</html>
